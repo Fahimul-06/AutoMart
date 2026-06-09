@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { supabase, type Vehicle, type Booking, type VehicleQuestion } from '../lib/supabase';
 import type { Page, AdminTab } from '../types';
+import ImageDropZone from '../components/ImageDropZone';
 
 type Props = {
   user: { id: string; email: string };
@@ -299,14 +300,14 @@ function VehicleForm({ vehicle, onSave, saving, onCancel }: {
     mileage: vehicle?.mileage ?? 0,
     featured: vehicle?.featured ?? false,
     sold: vehicle?.sold ?? false,
-    images_text: vehicle?.images?.join('\n') ?? '',
+    images_arr: vehicle?.images ?? [],
   });
 
   const set = (key: string, val: unknown) => setForm(f => ({ ...f, [key]: val }));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const images = form.images_text.split('\n').map(s => s.trim()).filter(Boolean);
+    const images = form.images_arr;
     const payload = {
       title: form.title,
       brand: form.brand,
@@ -391,9 +392,7 @@ function VehicleForm({ vehicle, onSave, saving, onCancel }: {
           <textarea value={form.description} onChange={e => set('description', e.target.value)} rows={3} className={inputCls + ' resize-none'} />
         </Field>
 
-        <Field label="Image URLs (one per line, minimum 6 recommended)">
-          <textarea value={form.images_text} onChange={e => set('images_text', e.target.value)} rows={6} placeholder="https://images.pexels.com/photos/..." className={inputCls + ' resize-none font-mono text-xs'} />
-        </Field>
+        <ImageDropZone images={form.images_arr} onChange={arr => set('images_arr', arr)} max={6} />
 
         <div className="flex items-center gap-6">
           <label className="flex items-center gap-2 cursor-pointer">
