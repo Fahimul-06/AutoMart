@@ -1,0 +1,12 @@
+export type User={id:string;name:string;email:string;phone?:string;role:'customer'|'admin'};
+export type Vehicle={_id:string;make:string;model:string;variant:string;year:number;price:number;mileage:number;fuel:string;transmission:string;bodyType:string;condition:string;location:string;color:string;engine:string;description:string;features:string[];images:string[];featured:boolean;status:string};
+export type Settings={annualInterestRate:number;bookingAmount:number;currency:string;paymentInstructions:string;paymentMethods:string[]};
+export type Booking={_id:string;vehicleSnapshot:{make:string;model:string;year:number;price:number;image:string};financeType:'cash'|'loan';downPaymentPercent:number;tenureYears:number;annualInterestRate:number;downPaymentAmount:number;principal:number;monthlyInstallment:number;totalInterest:number;totalRepayment:number;bookingAmount:number;paymentStatus:string;paymentMethod:string;transactionId:string;status:string;createdAt:string;customer?:{name:string;email:string;phone:string}};
+const origin=(import.meta.env.VITE_API_URL||'/api').replace(/\/$/,'');
+export async function api<T>(path:string,options:RequestInit={}):Promise<T>{const response=await fetch(origin+path,{...options,credentials:'include',headers:{'Content-Type':'application/json',...(options.headers||{})}});let payload:any;try{payload=await response.json();}catch{throw new Error('Server unreachable or returned an invalid response');}if(!response.ok)throw new Error(payload.message||'Request failed');return payload as T;}
+export const post=<T>(path:string,data:unknown)=>api<T>(path,{method:'POST',body:JSON.stringify(data)});
+export const put=<T>(path:string,data:unknown)=>api<T>(path,{method:'PUT',body:JSON.stringify(data)});
+export const patch=<T>(path:string,data:unknown)=>api<T>(path,{method:'PATCH',body:JSON.stringify(data)});
+export const del=<T>(path:string)=>api<T>(path,{method:'DELETE'});
+export function loanCalc(price:number,pct:number,years:number,annualRate:number){const downPaymentAmount=price*pct/100;const principal=price-downPaymentAmount;const n=years*12;const r=annualRate/1200;const monthlyInstallment=principal===0?0:r===0?principal/n:principal*r/(1-Math.pow(1+r,-n));const totalRepayment=monthlyInstallment*n;return {downPaymentAmount,principal,monthlyInstallment,totalInterest:Math.max(0,totalRepayment-principal),totalRepayment};}
+export const money=(n:number)=>'৳'+Math.round(n).toLocaleString('en-BD');

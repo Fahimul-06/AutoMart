@@ -1,0 +1,29 @@
+# Single Render Web Service: React static site + Express REST API, same origin.
+# Use Render > New > Blueprint and select this repository.
+services:
+  - type: web
+    name: dream-vehicle-enterprise
+    runtime: node
+    plan: starter
+    region: singapore
+    buildCommand: npm run render:build
+    startCommand: npm run render:start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        value: management@gmail.com
+      - key: DEFAULT_INTEREST_RATE
+        value: "10"
+      - key: DEFAULT_BOOKING_AMOUNT
+        value: "10000"
+# Do not set ADMIN_PASSWORD as a permanent deploy variable.
+# Set it temporarily for the initial seed and remove it afterward.
+# Render supplies RENDER_EXTERNAL_URL, used to validate browser Origin headers.
