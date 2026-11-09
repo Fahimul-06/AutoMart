@@ -1,10 +1,8 @@
-
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-
   server: {
     host: '0.0.0.0',
     proxy: {
@@ -14,7 +12,6 @@ export default defineConfig({
       },
     },
   },
-
   build: {
     target: 'es2020',
     cssCodeSplit: true,
@@ -22,11 +19,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'react-vendor': [
-            'react',
-            'react-dom',
-            'react-router-dom',
-          ],
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
         },
       },
     },
