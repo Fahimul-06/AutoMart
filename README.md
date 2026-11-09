@@ -9,7 +9,7 @@
 3. On [Render](https://dashboard.render.com), select **New → Blueprint**, select the GitHub repository, and approve the `dream-vehicle-enterprise` Web Service. Render uses **`npm run render:build`**, **`npm run render:start`**, and health check **`/api/health`**.
 4. Set required secret `MONGODB_URI` in Render's environment form. `JWT_SECRET` is generated automatically by the Blueprint. `NODE_ENV=production` is configured. Render normally provides `RENDER_EXTERNAL_URL` automatically for origin validation; for a custom domain, add `CLIENT_ORIGIN=https://your-custom-domain.example` to the service environment. Set `PORT` only if necessary; Render sets it by default.
 5. Deploy and visit `https://YOUR-SERVICE.onrender.com/api/health`. It should show `{ "status": "ready" }`, then open the base URL for the website.
-6. **One-time initial database seed:** From a trusted machine with access to Atlas, configure `server/.env` with the *same* `MONGODB_URI`, `ADMIN_EMAIL=management@gmail.com`, and a **private, unique 12+ character** `ADMIN_PASSWORD`, then run `npm install --prefix server` and `npm run seed --prefix server`. This seeds the admin account and 12 demo vehicles (four illustrative stock-image links each). `JWT_SECRET` is not needed for this seed. No live login works before seeding. The seed does not overwrite a previously created admin password.
+6. **One-time initial database seed:** From a trusted machine with access to Atlas, configure `server/.env` with the *same* `MONGODB_URI`, `ADMIN_EMAIL=management@gmail.com`, and a **private, unique 12+ character** `ADMIN_PASSWORD`, then run `npm install --prefix server` and `npm run seed --prefix server`. This seeds the admin account and 30 demo vehicles (five illustrative stock-image links each). `JWT_SECRET` is not needed for this seed. No live login works before seeding. The seed does not overwrite a previously created admin password.
 7. Log in at `/login`; the administrator dashboard is `/admin`. Replace demo photographs and listings with genuine licensed images and real inventory before advertising.
 
 **Production environment variables** (set at Render → Environment, *not* in Git or `client/.env`):
@@ -48,3 +48,19 @@ Admin: `GET /api/vehicles/admin/list`, `POST /api/vehicles`, `PUT /api/vehicles/
 ## Finance
 
 Monthly reducing-balance EMI at fixed nominal annual interest rate: `P = vehicle_price × (1 − down_percent/100)`, `r = annual_rate / 1200`, `n = years × 12`, `EMI = P × r/(1 − (1+r)^(-n))` (zero rate: `P/n`). Booking amount is separate from the down payment, and its credit toward the final price requires the dealer's documented policy.
+
+## Demo vehicles for an existing Render Web Service
+
+**Fastest option:** Render dashboard → your Web Service → **Environment** → add
+`DEMO_SEED_ON_START=true`, save and redeploy/restart. Once MongoDB connects, the backend
+will **insert 30 example listings** (five *illustrative* gallery URLs per listing). Existing
+matching records are not overwritten. Once inserted, switch the variable back to `false`
+for normal operation. This setting **does not create an admin account**.
+
+Alternatively run `npm run seed:demo` locally with `MONGODB_URI` set in `server/.env`.
+The existing `npm run seed` creates the administrator (if needed) **and** example inventory.
+Neither command should be used as a replacement for a real inventory import. Demo listings
+are explicitly marked, and illustrative gallery images are **not verified make/model photos**.
+Do not collect booking payments for demonstration listings.
+
+This update also adds `client/src/vite-env.d.ts` to fix missing `import.meta.env` TypeScript types.

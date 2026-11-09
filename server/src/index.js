@@ -39,6 +39,12 @@ if(process.env.NODE_ENV==='production'){
 app.use((_req,res)=>res.status(404).json({message:'Route not found'}));
 app.use((err,req,res,next)=>{if(res.headersSent)return next(err);console.error(err);res.status(err.message==='Origin not permitted'?403:500).json({message:'Request could not be completed'})});
 await mongoose.connect(process.env.MONGODB_URI,{serverSelectionTimeoutMS:12000,maxPoolSize:15,minPoolSize:1});
+// Opt-in demonstration inventory for Render; no admin password required and no overwrites.
+if(process.env.DEMO_SEED_ON_START==='true'){
+  const {seedDemoVehicles}=await import('../scripts/mockVehicles.js');
+  const {inserted,totalDemoTemplates}=await seedDemoVehicles();
+  console.log(`Demo seed: ${inserted} inserted from ${totalDemoTemplates} templates (existing inventory preserved)`);
+}
 const server=app.listen(Number(process.env.PORT)||5000,'0.0.0.0',()=>console.log('Dream Vehicle Enterprise API ready'));
 async function shutdown(){server.close(async()=>{await mongoose.disconnect();process.exit(0)});setTimeout(()=>process.exit(1),10000).unref()}
 process.on('SIGINT',shutdown);process.on('SIGTERM',shutdown);
