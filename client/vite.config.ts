@@ -1,3 +1,34 @@
-import {defineConfig} from 'vite';
+
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-export default defineConfig({plugins:[react()],server:{host:'0.0.0.0',proxy:{'/api':{target:'http://localhost:5000',changeOrigin:true}}},build:{target:'es2020',cssCodeSplit:true,assetsInlineLimit:2048,rollupOptions:{output:{manualChunks:{'react-vendor':['react','react-dom','react-router-dom']}}}}}});
+
+export default defineConfig({
+  plugins: [react()],
+
+  server: {
+    host: '0.0.0.0',
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+    },
+  },
+
+  build: {
+    target: 'es2020',
+    cssCodeSplit: true,
+    assetsInlineLimit: 2048,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': [
+            'react',
+            'react-dom',
+            'react-router-dom',
+          ],
+        },
+      },
+    },
+  },
+});
