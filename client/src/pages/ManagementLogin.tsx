@@ -4,7 +4,7 @@ import {post,type User} from '../lib/api';
 
 export default function ManagementLogin({setUser}:{setUser:(user:User|null)=>void}){
   const [email,setEmail]=useState('');
-  const [password,setPassword]=useState('');
+  const [password,setPassword]=useState('');const [showPassword,setShowPassword]=useState(false);
   const [error,setError]=useState('');
   const [busy,setBusy]=useState(false);
   async function submit(e:FormEvent){
@@ -25,8 +25,8 @@ export default function ManagementLogin({setUser}:{setUser:(user:User|null)=>voi
     <div className="management-title"><ShieldCheck size={24}/><div><h1>Management sign in</h1><p>Authorized administrators only</p></div></div>
     <form onSubmit={submit}>
       <label>Email address<div className="input-icon"><Mail size={18}/><input type="email" autoComplete="username" required value={email} onChange={e=>setEmail(e.target.value)} placeholder="Management email"/></div></label>
-      <label>Password<div className="input-icon"><LockKeyhole size={18}/><input type="password" autoComplete="current-password" required value={password} onChange={e=>setPassword(e.target.value)} placeholder="Management password"/></div></label>
-      {error&&<p role="alert" className="error">{error}</p>}
+      <label>Password<div className="input-icon"><LockKeyhole size={18}/><input type={showPassword?"text":"password"} autoComplete="current-password" required value={password} onChange={e=>setPassword(e.target.value)} placeholder="Management password"/></div></label>
+      <label className='checkbox-row'><input type='checkbox' checked={showPassword} onChange={e=>setShowPassword(e.target.checked)}/> Show password</label>{error&&<p role="alert" className="error">{error}</p>}
       <button className="btn btn-primary auth-submit" disabled={busy}>{busy?'Signing in...':'Sign in to dashboard'}<ArrowRight size={17}/></button>
     </form><p className="management-login-note">Access is validated against the server-side administrator role. This address is not a security control by itself.</p>
     <a className="management-back-link" href="/">Return to vehicle marketplace</a>

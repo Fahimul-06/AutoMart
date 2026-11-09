@@ -10,6 +10,7 @@ const Detail=lazy(()=>import('./pages/Detail'));
 const Auth=lazy(()=>import('./pages/Auth'));
 const Bookings=lazy(()=>import('./pages/Bookings'));
 const Profile=lazy(()=>import('./pages/Profile'));
+const ResetPassword=lazy(()=>import('./pages/ResetPassword'));
 const Admin=lazy(()=>import('./pages/Admin'));
 const ManagementLogin=lazy(()=>import('./pages/ManagementLogin'));
 
@@ -53,7 +54,7 @@ function App(){
       <Route path="/" element={<Home/>}/>
       <Route path="/vehicles" element={<Catalog/>}/>
       <Route path="/vehicles/:id" element={<Detail user={user}/>}/>
-      <Route path="/login" element={<Auth setUser={setUser}/>}/>
+      <Route path="/login" element={<Auth setUser={setUser}/>}/><Route path="/reset-password" element={<ResetPassword/>}/>
       <Route path="/bookings" element={<Bookings user={user}/>}/><Route path="/profile" element={<Profile user={user} setUser={setUser}/>}/>
       <Route path="/admin" element={<Navigate to="/" replace/>}/>
       <Route path="*" element={<Navigate to="/" replace/>}/>

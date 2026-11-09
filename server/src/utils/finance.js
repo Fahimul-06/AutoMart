@@ -1,6 +1,6 @@
 /** Reducing-balance EMI, monthly compounding. Values rounded to 2 decimals for display/storage. */
 export function calculateLoan(price,downPercent,years,annualRate){
-  if (![price,downPercent,years,annualRate].every(Number.isFinite)||price<=0||downPercent<0||downPercent>100||!Number.isInteger(years)||years<1||years>10||annualRate<0||annualRate>50) throw new Error('Invalid loan parameters');
+  if (![price,downPercent,years,annualRate].every(Number.isFinite)||price<=0||downPercent<0||downPercent>100||!Number.isInteger(years)||years<1||years>6||annualRate<0||annualRate>50) throw new Error('Invalid loan parameters');
   const downPaymentAmount=price*downPercent/100;
   const principal=price-downPaymentAmount;
   const n=years*12;

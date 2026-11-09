@@ -1,17 +1,19 @@
 import {useEffect,useState} from 'react';
 import {Link,useNavigate} from 'react-router-dom';
 import {ArrowRight,ArrowUpRight,ShieldCheck,Wallet,CarFront,Headphones,Search} from 'lucide-react';
-import {api,Vehicle} from '../lib/api';
+import {api,Vehicle,Settings} from '../lib/api';
 import VehicleCard from '../components/VehicleCard';
 
 export default function Home(){
   const [featured,setFeatured]=useState<Vehicle[]>([]);
-  const [search,setSearch]=useState('');
+  const [search,setSearch]=useState('');const [slides,setSlides]=useState<string[]>(['/hero-banner.webp']);const [slideIndex,setSlideIndex]=useState(0);const [intervalSeconds,setIntervalSeconds]=useState(6);
   const nav=useNavigate();
+useEffect(()=>{api<{settings:Settings}>('/settings').then(({settings})=>{if(settings.heroImages?.length)setSlides(settings.heroImages);setIntervalSeconds(settings.heroIntervalSeconds||6)}).catch(()=>{})},[]);
+useEffect(()=>{if(slides.length<2)return;const timer=window.setInterval(()=>setSlideIndex(i=>(i+1)%slides.length),intervalSeconds*1000);return()=>window.clearInterval(timer)},[slides,intervalSeconds]);
   useEffect(()=>{api<{vehicles:Vehicle[]}>('/vehicles?featured=true&limit=6').then(d=>setFeatured(d.vehicles.slice(0,6))).catch(()=>{})},[]);
   return <>
     <section className="hero hero-banner">
-      <img className="hero-banner-image" src="/hero-banner.webp" fetchPriority="high" decoding="async" alt="Find your dream car with Dream Car Enterprise"/>
+      <img key={slides[slideIndex]} className="hero-banner-image hero-fade" src={slides[slideIndex]} fetchPriority="high" decoding="async" alt={`Dream Car Enterprise showcase ${slideIndex+1}`} onError={e=>{e.currentTarget.onerror=null;e.currentTarget.src="/hero-banner.webp"}}/>{slides.length>1&&<div className="hero-dots" aria-label="Choose banner image">{slides.map((_,i)=><button type="button" key={i} className={i===slideIndex?"selected":""} aria-label={`Show banner ${i+1}`} onClick={()=>setSlideIndex(i)}/>)}</div>}
     </section>
 
     <section className="container hero-search-wrap hero-search-section">

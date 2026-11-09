@@ -13,6 +13,9 @@ if(typeof make==='string'&&make.length<80&&make)q.make=make;
 if(['New','Used','Reconditioned'].includes(condition))q.condition=condition;
 if(typeof bodyType==='string'&&bodyType.length<50&&bodyType)q.bodyType=bodyType;
 if(featured==='true')q.featured=true;
+const minPrice=Number(req.query.minPrice),maxPrice=Number(req.query.maxPrice);
+if(req.query.minPrice!==undefined||req.query.maxPrice!==undefined){if((req.query.minPrice!==undefined&&(!Number.isFinite(minPrice)||minPrice<0))||(req.query.maxPrice!==undefined&&(!Number.isFinite(maxPrice)||maxPrice<0))||(req.query.minPrice!==undefined&&req.query.maxPrice!==undefined&&minPrice>maxPrice))return res.status(400).json({message:'Invalid price range'});q.price={...(req.query.minPrice!==undefined?{$gte:minPrice}:{}),...(req.query.maxPrice!==undefined?{$lte:maxPrice}:{})};}
+if(req.query.year!==undefined){const year=Number(req.query.year);if(!Number.isInteger(year)||year<1950||year>2100)return res.status(400).json({message:'Invalid model year'});q.year=year;}
 const sorts={recent:{createdAt:-1,_id:-1},price_asc:{price:1,_id:-1},price_desc:{price:-1,_id:-1},year:{year:-1,_id:-1}};
 const [vehicles,total]=await Promise.all([
 Vehicle.find(q).select('make model variant year price mileage fuel transmission bodyType condition location images featured status').sort(sorts[sort]||sorts.recent).skip((page-1)*limit).limit(limit).lean(),

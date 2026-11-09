@@ -58,7 +58,7 @@ export function demoVehicleData(row, index) {
   return {
     make,model,variant,year,price,mileage,fuel,transmission,bodyType,condition,color,engine,
     location:`${city}, Bangladesh`, featured, status:'available', images,
-    description:`DEMO LISTING — Not a real vehicle offer. This ${year} ${make} ${model} ${variant} is an illustrative example for previewing Dream Vehicle Enterprise, finance estimates, and bookings. The listed price, mileage, condition, specifications and photos are placeholders. Do not pay a deposit for this listing.`,
+    description:`DEMO LISTING — Not a real vehicle offer. This ${year} ${make} ${model} ${variant} is an illustrative example for previewing Dream Car Enterprise, finance estimates, and bookings. The listed price, mileage, condition, specifications and photos are placeholders. Do not pay a deposit for this listing.`,
     features:['Air conditioning','Anti-lock brakes (illustrative)','Reverse camera (illustrative)','Bluetooth audio','Power steering','Airbags (illustrative)']
   };
 }

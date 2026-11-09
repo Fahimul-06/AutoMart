@@ -71,6 +71,6 @@ if(process.env.DEMO_SEED_ON_START==='true'){
   const {inserted,totalDemoTemplates}=await seedDemoVehicles();
   console.log(`Demo seed: ${inserted} inserted from ${totalDemoTemplates} templates (existing inventory preserved)`);
 }
-const server=app.listen(Number(process.env.PORT)||5000,'0.0.0.0',()=>console.log('Dream Vehicle Enterprise API ready'));
+const server=app.listen(Number(process.env.PORT)||5000,'0.0.0.0',()=>console.log('Dream Car Enterprise API ready'));
 async function shutdown(){server.close(async()=>{await mongoose.disconnect();process.exit(0)});setTimeout(()=>process.exit(1),10000).unref()}
 process.on('SIGINT',shutdown);process.on('SIGTERM',shutdown);

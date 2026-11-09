@@ -5,3 +5,5 @@ test('zero interest gives straight principal divided by payments',()=>{const x=c
 test('reducing balance EMI is correct',()=>{const x=calculateLoan(3000000,20,5,10);assert.equal(x.downPaymentAmount,600000);assert.equal(x.principal,2400000);assert.ok(Math.abs(x.monthlyInstallment-50992.91)<.1);assert.ok(x.totalInterest>0);});
 test('full down payment has zero EMI',()=>{const x=calculateLoan(3000000,100,5,10);assert.equal(x.monthlyInstallment,0);});
 test('reject invalid parameters',()=>{assert.throws(()=>calculateLoan(100,10,0,10));assert.throws(()=>calculateLoan(100,101,5,10));});
+
+test('loan tenure supports 1 to 6 years only',()=>{assert.equal(calculateLoan(3000000,20,6,10).tenureYears,6);assert.throws(()=>calculateLoan(3000000,20,7,10));});
