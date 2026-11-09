@@ -20,8 +20,9 @@ function ManagementPortal({user,setUser,ready}:{user:User|null;setUser:(u:User|n
 
 // This is a public routing preference, not an authentication secret.
 // Render builds VITE_* variables into the frontend bundle.
-const configuredManagementHash = (import.meta.env.VITE_ADMIN_LOGIN_HASH || '/management_dash.com').trim();
+const configuredManagementHash = String(import.meta.env.VITE_ADMIN_LOGIN_HASH || '/management_dash.com').trim();
 const managementHash = '#/' + configuredManagementHash.replace(/^#?\/?/, '').replace(/\/+$/, '');
+const isManagementHash = (value:string) => decodeURIComponent(value).replace(/\/+$/, '').toLowerCase() === managementHash.toLowerCase();
 
 function App(){
   const [user,setUser]=useState<User|null>(null);
@@ -41,7 +42,7 @@ function App(){
 
   // The hash never travels to Express, so this address works even on a cold
   // browser visit. The API still independently enforces admin authorization.
-  if(hash===managementHash){
+  if(isManagementHash(hash)){
     return <Suspense fallback={<div className="container empty">Loading management portal...</div>}>
       <ManagementPortal user={user} setUser={setUser} ready={ready}/>
     </Suspense>;

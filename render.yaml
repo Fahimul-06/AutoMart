@@ -20,6 +20,8 @@ services:
         generateValue: true
       - key: VITE_ADMIN_LOGIN_HASH
         value: "/management_dash.com"
+      - key: ADMIN_BOOTSTRAP_ON_START
+        value: "false"
       - key: ADMIN_EMAIL
         value: management@gmail.com
       - key: DEFAULT_INTEREST_RATE

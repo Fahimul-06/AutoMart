@@ -28,6 +28,9 @@ app.use('/api/auth',rateLimit({windowMs:15*60*1000,limit:20,standardHeaders:'dra
 app.use('/api/bookings',rateLimit({windowMs:15*60*1000,limit:80,standardHeaders:'draft-7',legacyHeaders:false}));
 app.get('/api/health',(_req,res)=>{const ready=mongoose.connection.readyState===1;res.status(ready?200:503).json({status:ready?'ready':'unavailable'})});
 app.use('/api/auth',authRoutes);app.use('/api/vehicles',vehicleRoutes);app.use('/api/bookings',bookingRoutes);app.use('/api/settings',settingsRoutes);
+// Canonical management address: both the dedicated URL and the hash URL work.
+// Hash routing is handled by the browser; this redirect prevents normal path typos.
+app.get('/management_dash.com',(_req,res)=>res.redirect(302, '/#/management_dash.com'));
 // One-domain production deployment: serve Vite's prebuilt static files from Express.
 // Hashed assets can be cached for a year; HTML must revalidate on each visit.
 const clientDist=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../client/dist');
@@ -39,6 +42,17 @@ if(process.env.NODE_ENV==='production'){
 app.use((_req,res)=>res.status(404).json({message:'Route not found'}));
 app.use((err,req,res,next)=>{if(res.headersSent)return next(err);console.error(err);res.status(err.message==='Origin not permitted'?403:500).json({message:'Request could not be completed'})});
 await mongoose.connect(process.env.MONGODB_URI,{serverSelectionTimeoutMS:12000,maxPoolSize:15,minPoolSize:1});
+// Optional one-time admin bootstrap. Disable and remove ADMIN_PASSWORD after first success.
+if(process.env.ADMIN_BOOTSTRAP_ON_START==='true'){
+  if(!process.env.ADMIN_EMAIL||!process.env.ADMIN_PASSWORD||process.env.ADMIN_PASSWORD.length<12)throw Error('Admin bootstrap requires ADMIN_EMAIL and a 12+ character ADMIN_PASSWORD');
+  const bcrypt=(await import('bcryptjs')).default;
+  const User=(await import('./models/User.js')).default;
+  const email=process.env.ADMIN_EMAIL.trim().toLowerCase();
+  const existing=await User.findOne({email});
+  if(existing && existing.role!=='admin')throw Error('Bootstrap email belongs to a non-admin account; refusing role escalation');
+  if(!existing){await User.create({name:'Management',email,passwordHash:await bcrypt.hash(process.env.ADMIN_PASSWORD,12),role:'admin'});console.log('Initial management account created');}
+  else console.log('Management account already present; credentials unchanged');
+}
 // Opt-in demonstration inventory for Render; no admin password required and no overwrites.
 if(process.env.DEMO_SEED_ON_START==='true'){
   const {seedDemoVehicles}=await import('../scripts/mockVehicles.js');
