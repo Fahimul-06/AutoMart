@@ -43,9 +43,9 @@ function App(){
   // The hash never travels to Express, so this address works even on a cold
   // browser visit. The API still independently enforces admin authorization.
   if(isManagementHash(hash)){
-    return <Suspense fallback={<div className="container empty">Loading management portal...</div>}>
+    return <BrowserRouter><Suspense fallback={<div className="container empty">Loading management portal...</div>}>
       <ManagementPortal user={user} setUser={setUser} ready={ready}/>
-    </Suspense>;
+    </Suspense></BrowserRouter>;
   }
   return <BrowserRouter><Suspense fallback={<div className="container empty">Loading...</div>}><Routes>
     <Route element={<Layout user={user} setUser={setUser}/> }>
