@@ -26,3 +26,17 @@
 .management-topbar img{width:210px;height:70px;object-fit:contain;object-position:left}
 .management-topbar button{border:1px solid #ffffff60;background:transparent;border-radius:5px;padding:10px 16px;color:#fff;cursor:pointer}
 @media(max-width:760px){.site-header .brand-image{width:170px;height:62px}.footer-logo .brand-image{height:78px}.management-login-card{padding:25px}.management-topbar img{width:170px}}
+
+/* Showroom contact details and map */
+.footer .footer-contact-line{display:flex;align-items:flex-start;gap:9px;color:#c1cac9;line-height:1.6;max-width:290px}
+.footer-contact-line svg{flex-shrink:0;margin-top:2px;color:#f37979}
+.footer .socials a{display:inline-flex;align-items:center;gap:9px;color:#fff!important;font-size:13px;border:1px solid #ffffff39;border-radius:8px;padding:10px 13px;margin-bottom:0;text-decoration:none;transition:background .2s ease,border-color .2s ease}
+.footer .socials a:hover,.footer .socials a:focus-visible{background:#263845;border-color:#f37979}
+.footer-map-section{margin-top:42px}
+.footer-map-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:15px}
+.footer-map-heading h4{display:flex;align-items:center;gap:9px;color:#fff;font-size:17px;margin:0 0 7px}
+.footer-map-heading p{color:#b1bdc4;font-size:13px;line-height:1.6;margin:0}
+.footer .footer-map-open{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;color:#fff;text-decoration:none;background:#b91c1c;border-radius:6px;padding:10px 14px;font-size:13px;font-weight:700}
+.footer .footer-map-open:hover{background:#991b1b}
+.footer-map-frame{display:block;width:100%;height:310px;border:0;border-radius:12px;background:#edf0f1}
+@media(max-width:700px){.footer-map-heading{align-items:flex-start;flex-direction:column}.footer-map-frame{height:260px}}
