@@ -5,3 +5,24 @@
 @media(max-width:400px){.hero-buttons{flex-direction:column;align-items:flex-start}.hero-trust{margin-top:25px}.hero h1{font-size:40px}.spec-grid,.stat-grid,.foot-grid{grid-template-columns:1fr}.foot-grid>div:first-child{grid-column:auto}.car-features{gap:7px}.tenure-options button{padding:9px 1px}.detail-heading h1{font-size:28px}}
 
 .pagination{display:flex;align-items:center;justify-content:center;gap:18px;padding:35px 0}.pagination button{border:1px solid #ccc;background:white;padding:10px 20px;border-radius:6px;cursor:pointer}.pagination button:disabled{opacity:.4;cursor:not-allowed}
+
+/* Dream Car Enterprise custom branding */
+.logo{display:inline-flex;align-items:center;letter-spacing:normal;min-width:0}
+.brand-image{width:clamp(160px,19vw,265px);height:72px;object-fit:contain;object-position:left center}
+.site-header .brand-image{height:76px}
+.footer-logo .brand-image{width:265px;height:90px;filter:drop-shadow(0 1px 2px #fff2)}
+.auth-logo .brand-image{width:min(350px,100%);height:130px}
+.management-login-page{min-height:100vh;display:grid;place-items:center;padding:35px 18px;background:radial-gradient(circle at 20% 12%,#5c0e12 0,transparent 35%),#0b1017}
+.management-login-card{width:min(460px,100%);background:#fff;padding:38px;border-radius:14px;box-shadow:0 25px 60px #0005}
+.management-login-logo{width:100%;height:115px;object-fit:contain;margin-bottom:18px;background:#0d1118;border-radius:8px;padding:8px}
+.management-title{display:flex;gap:12px;align-items:center;margin-bottom:28px;color:#991b1b}
+.management-title h1{margin:0;color:#18212b;font:800 25px Manrope,sans-serif}
+.management-title p{margin:5px 0 0;color:#7a8792;font-size:12px}
+.management-login-card label{font-size:12px;font-weight:700;display:block;margin-bottom:20px;color:#26303c}
+.management-login-card .input-icon{margin-top:9px}
+.management-login-note{font-size:11px;line-height:1.6;color:#71808b;margin:24px 0 14px}
+.management-back-link{color:#8e1218;font-size:12px;font-weight:700}
+.management-topbar{background:#0d1118;display:flex;align-items:center;justify-content:space-between;padding:7px max(25px,calc((100% - 1180px)/2));gap:20px}
+.management-topbar img{width:210px;height:70px;object-fit:contain;object-position:left}
+.management-topbar button{border:1px solid #ffffff60;background:transparent;border-radius:5px;padding:10px 16px;color:#fff;cursor:pointer}
+@media(max-width:760px){.site-header .brand-image{width:170px;height:62px}.footer-logo .brand-image{height:78px}.management-login-card{padding:25px}.management-topbar img{width:170px}}
