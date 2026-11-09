@@ -1,6 +1,6 @@
 import {useEffect,useState} from 'react';
 import {Link} from 'react-router-dom';
-import {api,patch,type User} from '../lib/api';
+import {patch,type User} from '../lib/api';
 export default function Profile({user,setUser}:{user:User|null;setUser:(u:User|null)=>void}){
  const [name,setName]=useState(user?.name||'');const [phone,setPhone]=useState(user?.phone||'');
  const [busy,setBusy]=useState(false);const [error,setError]=useState('');const [notice,setNotice]=useState('');
