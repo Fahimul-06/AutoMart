@@ -10,4 +10,10 @@ r.post('/register',async(req,res)=>{const data=parse(userInput,req.body,res);if(
 r.post('/login',async(req,res)=>{const data=parse(z.object({email:z.string().email(),password:z.string().min(1)}),req.body,res);if(!data)return;const user=await User.findOne({email:data.email.toLowerCase()}).select('+passwordHash');if(!user||!(await bcrypt.compare(data.password,user.passwordHash)))return res.status(401).json({message:'Invalid email or password'});setSession(res,user);res.json({user:publicUser(user)});});
 r.post('/logout',(_req,res)=>{res.clearCookie('session',{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'lax',path:'/'});res.json({ok:true});});
 r.get('/me',auth,(req,res)=>res.json({user:publicUser(req.user)}));
+r.patch('/me',auth,async(req,res)=>{
+ const data=parse(z.object({name:z.string().trim().min(2).max(100),phone:z.string().trim().max(30)}).strict(),req.body,res);
+ if(!data)return;
+ const user=await User.findByIdAndUpdate(req.user._id,{$set:data},{new:true,runValidators:true});
+ res.set('Cache-Control','no-store');res.json({user:publicUser(user)});
+});
 export default r;
