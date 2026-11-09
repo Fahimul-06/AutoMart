@@ -17,7 +17,18 @@ const deploymentOrigin=process.env.RENDER_EXTERNAL_URL||process.env.PUBLIC_ORIGI
 if(process.env.NODE_ENV==='production'&&!process.env.CLIENT_ORIGIN&&!deploymentOrigin){console.error('Set PUBLIC_ORIGIN or CLIENT_ORIGIN in production');process.exit(1)}
 const origins=[process.env.CLIENT_ORIGIN||'',deploymentOrigin,process.env.PUBLIC_ORIGIN||'',...(process.env.NODE_ENV==='production'?[]:['http://localhost:5173'])].flatMap(x=>x.split(',')).map(x=>x.trim().replace(/\/$/,'')).filter(Boolean);
 const app=express();app.disable('x-powered-by');app.set('trust proxy',1);
-app.use(helmet({crossOriginResourcePolicy:{policy:'cross-origin'}}));
+// Helmet's default CSP allows frames only from 'self'. Permit the showroom's
+// Google Maps embed without weakening frame-ancestors or other protections.
+// Vehicle photos are hosted on external HTTPS providers, so allow HTTPS images.
+app.use(helmet({
+  crossOriginResourcePolicy: {policy: 'cross-origin'},
+  contentSecurityPolicy: {
+    directives: {
+      frameSrc: ["'self'", 'https://www.google.com', 'https://maps.google.com'],
+      imgSrc: ["'self'", 'data:', 'https:'],
+    },
+  },
+}));
 app.use(express.json({limit:'150kb'}));app.use(cookieParser());
 app.use(cors({origin(origin,cb){if(!origin||origins.includes(origin))return cb(null,true);return cb(new Error('Origin not permitted'))},credentials:true}));
 app.use('/api',(req,res,next)=>{if(['POST','PUT','PATCH','DELETE'].includes(req.method)&&process.env.NODE_ENV==='production'){
