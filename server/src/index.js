@@ -13,6 +13,8 @@ import vehicleRoutes from './routes/vehicles.js';
 import bookingRoutes from './routes/bookings.js';
 import settingsRoutes from './routes/settings.js';
 import uploadRoutes from './routes/uploads.js';
+import offerRoutes from './routes/offers.js';
+import {expireUnpaidSelections} from './utils/offerLifecycle.js';
 if(!process.env.MONGODB_URI||!process.env.JWT_SECRET||process.env.JWT_SECRET.length<32){console.error('MONGODB_URI and JWT_SECRET (>=32 characters) are required');process.exit(1)}
 const deploymentOrigin=process.env.RENDER_EXTERNAL_URL||process.env.PUBLIC_ORIGIN||'';
 if(process.env.NODE_ENV==='production'&&!process.env.CLIENT_ORIGIN&&!deploymentOrigin){console.error('Set PUBLIC_ORIGIN or CLIENT_ORIGIN in production');process.exit(1)}
@@ -39,7 +41,7 @@ app.use('/api',rateLimit({windowMs:15*60*1000,limit:300,standardHeaders:'draft-7
 app.use('/api/auth',rateLimit({windowMs:15*60*1000,limit:20,standardHeaders:'draft-7',legacyHeaders:false}));
 app.use('/api/bookings',rateLimit({windowMs:15*60*1000,limit:80,standardHeaders:'draft-7',legacyHeaders:false}));
 app.get('/api/health',(_req,res)=>{const ready=mongoose.connection.readyState===1;res.status(ready?200:503).json({status:ready?'ready':'unavailable'})});
-app.use('/api/uploads',uploadRoutes);app.use('/api/auth',authRoutes);app.use('/api/vehicles',vehicleRoutes);app.use('/api/bookings',bookingRoutes);app.use('/api/settings',settingsRoutes);
+app.use('/api/offers',rateLimit({windowMs:15*60*1000,limit:35,standardHeaders:'draft-7',legacyHeaders:false}),offerRoutes);app.use('/api/uploads',uploadRoutes);app.use('/api/auth',authRoutes);app.use('/api/vehicles',vehicleRoutes);app.use('/api/bookings',bookingRoutes);app.use('/api/settings',settingsRoutes);
 // Canonical management address: both the dedicated URL and the hash URL work.
 // Hash routing is handled by the browser; this redirect prevents normal path typos.
 app.get('/management_dash.com',(_req,res)=>res.redirect(302, '/#/management_dash.com'));
@@ -71,6 +73,8 @@ if(process.env.DEMO_SEED_ON_START==='true'){
   const {inserted,totalDemoTemplates}=await seedDemoVehicles();
   console.log(`Demo seed: ${inserted} inserted from ${totalDemoTemplates} templates (existing inventory preserved)`);
 }
+// Sweep expired unpaid selections even when nobody visits the site.
+const sweep=setInterval(()=>expireUnpaidSelections().catch(e=>console.error('Offer expiry sweep:',e.message)),60_000);sweep.unref();
 const server=app.listen(Number(process.env.PORT)||5000,'0.0.0.0',()=>console.log('Dream Car Enterprise API ready'));
-async function shutdown(){server.close(async()=>{await mongoose.disconnect();process.exit(0)});setTimeout(()=>process.exit(1),10000).unref()}
+async function shutdown(){clearInterval(sweep);server.close(async()=>{await mongoose.disconnect();process.exit(0)});setTimeout(()=>process.exit(1),10000).unref()}
 process.on('SIGINT',shutdown);process.on('SIGTERM',shutdown);

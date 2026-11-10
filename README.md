@@ -1,3 +1,5 @@
+> **New:** Read [PRIVATE_OFFERS_DEPLOY.md](PRIVATE_OFFERS_DEPLOY.md) for the customer-offer and three-hour booking workflow.
+
 # Dream Car Enterprise — Render One-Service Deployment
 
 **Deploy the entire web app (React frontend + Express API) on a single Render Web Service** with MongoDB Atlas for persistence. This repository includes `render.yaml` in its root. The customer website and backend API share the same HTTPS origin (`https://YOUR-SERVICE.onrender.com`), so **Netlify is not required**.
